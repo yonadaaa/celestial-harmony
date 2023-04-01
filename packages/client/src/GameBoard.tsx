@@ -9,56 +9,7 @@ const N_LAYERS = 2;
 const WIDTH = 10;
 const HEIGHT = 10;
 
-const Tile = ({ index, x, y }: { index: number; x: number; y: number }) => {
-  const {
-    world,
-    worldSend,
-    components: { TileTable },
-    network: { signer },
-  } = useMUD();
-
-  const tiles = useEntityQuery([Has(TileTable)]);
-
-  const tile = tiles.find((t) => {
-    const arr = world.entities[t].split(":");
-    const i = parseInt(arr[0]);
-    const xT = parseInt(arr[1]);
-    const yT = parseInt(arr[2]);
-
-    return i === index && xT === x && yT === y;
-  });
-
-  return (
-    <td
-      onClick={async () => {
-        // Create a World contract instance
-        const s = signer.get();
-        if (!s) throw new Error("No signer");
-
-        const txResult = await worldSend("flip", [
-          index,
-          x,
-          y,
-          tile ? !getComponentValueStrict(TileTable, tile).value : true,
-        ]);
-        await txResult.wait();
-      }}
-      style={{
-        border: 2,
-        borderColor: "black",
-        borderStyle: "solid",
-        width: "50px",
-        height: "50px",
-        backgroundColor:
-          tile && getComponentValueStrict(TileTable, tile).value
-            ? "black"
-            : "white",
-      }}
-    />
-  );
-};
-
-function Player(
+function Tile(
   props: ThreeElements["mesh"] & { index: number; x: number; y: number }
 ) {
   const {
@@ -110,8 +61,6 @@ function Player(
 }
 
 function Scene() {
-  const {} = useMUD();
-
   return (
     <group>
       <ambientLight />
@@ -120,7 +69,7 @@ function Scene() {
         {[...Array(N_LAYERS).keys()].map((index) =>
           [...Array(WIDTH).keys()].map((x) =>
             [...Array(HEIGHT).keys()].map((y) => (
-              <Player
+              <Tile
                 key={`${x},${y}`}
                 position={[x, index * 5 - 5, y]}
                 x={x}
