@@ -3,6 +3,9 @@ import { useEntityQuery } from "@latticexyz/react";
 import { getComponentValueStrict, Has } from "@latticexyz/recs";
 import { useMUD } from "./MUDContext";
 
+const N_LAYERS = 2;
+const WIDTH = 10;
+
 const Tile = ({ index, x, y }: { index: number; x: number; y: number }) => {
   const {
     world,
@@ -61,13 +64,13 @@ export const GameBoard = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex" }}>
-        {[0, 1].map((i) => (
+        {[...Array(N_LAYERS).keys()].map((i) => (
           <div style={{ margin: 10 }}>
             <div>Layer {i}</div>
             <table key={`${i}`}>
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((x) => (
+              {[...Array(WIDTH).keys()].map((x) => (
                 <tr>
-                  {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((y) => (
+                  {[...Array(WIDTH).keys()].map((y) => (
                     <Tile key={`${x},${y}`} index={i} x={x} y={y} />
                   ))}
                 </tr>
