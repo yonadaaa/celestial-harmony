@@ -17,7 +17,7 @@ import { EncodeArray } from "@latticexyz/store/src/tightcoder/EncodeArray.sol";
 import { Schema, SchemaLib } from "@latticexyz/store/src/Schema.sol";
 import { PackedCounter, PackedCounterLib } from "@latticexyz/store/src/PackedCounter.sol";
 
-uint256 constant _tableId = uint256(bytes32(abi.encodePacked(bytes16(""), bytes16("tile"))));
+uint256 constant _tableId = uint256(bytes32(abi.encodePacked(bytes16(""), bytes16("TileTable"))));
 uint256 constant TileTableTableId = _tableId;
 
 library TileTable {
@@ -30,9 +30,10 @@ library TileTable {
   }
 
   function getKeySchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](2);
-    _schema[0] = SchemaType.INT32;
-    _schema[1] = SchemaType.INT32;
+    SchemaType[] memory _schema = new SchemaType[](3);
+    _schema[0] = SchemaType.UINT32;
+    _schema[1] = SchemaType.UINT32;
+    _schema[2] = SchemaType.UINT32;
 
     return SchemaLib.encode(_schema);
   }
@@ -67,39 +68,43 @@ library TileTable {
   }
 
   /** Get value */
-  function get(int32 x, int32 y) internal view returns (bool value) {
-    bytes32[] memory _primaryKeys = new bytes32[](2);
-    _primaryKeys[0] = bytes32(uint256(uint32((x))));
-    _primaryKeys[1] = bytes32(uint256(uint32((y))));
+  function get(uint32 index, uint32 x, uint32 y) internal view returns (bool value) {
+    bytes32[] memory _primaryKeys = new bytes32[](3);
+    _primaryKeys[0] = bytes32(uint256((index)));
+    _primaryKeys[1] = bytes32(uint256((x)));
+    _primaryKeys[2] = bytes32(uint256((y)));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _primaryKeys, 0);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
   /** Get value (using the specified store) */
-  function get(IStore _store, int32 x, int32 y) internal view returns (bool value) {
-    bytes32[] memory _primaryKeys = new bytes32[](2);
-    _primaryKeys[0] = bytes32(uint256(uint32((x))));
-    _primaryKeys[1] = bytes32(uint256(uint32((y))));
+  function get(IStore _store, uint32 index, uint32 x, uint32 y) internal view returns (bool value) {
+    bytes32[] memory _primaryKeys = new bytes32[](3);
+    _primaryKeys[0] = bytes32(uint256((index)));
+    _primaryKeys[1] = bytes32(uint256((x)));
+    _primaryKeys[2] = bytes32(uint256((y)));
 
     bytes memory _blob = _store.getField(_tableId, _primaryKeys, 0);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
   /** Set value */
-  function set(int32 x, int32 y, bool value) internal {
-    bytes32[] memory _primaryKeys = new bytes32[](2);
-    _primaryKeys[0] = bytes32(uint256(uint32((x))));
-    _primaryKeys[1] = bytes32(uint256(uint32((y))));
+  function set(uint32 index, uint32 x, uint32 y, bool value) internal {
+    bytes32[] memory _primaryKeys = new bytes32[](3);
+    _primaryKeys[0] = bytes32(uint256((index)));
+    _primaryKeys[1] = bytes32(uint256((x)));
+    _primaryKeys[2] = bytes32(uint256((y)));
 
     StoreSwitch.setField(_tableId, _primaryKeys, 0, abi.encodePacked((value)));
   }
 
   /** Set value (using the specified store) */
-  function set(IStore _store, int32 x, int32 y, bool value) internal {
-    bytes32[] memory _primaryKeys = new bytes32[](2);
-    _primaryKeys[0] = bytes32(uint256(uint32((x))));
-    _primaryKeys[1] = bytes32(uint256(uint32((y))));
+  function set(IStore _store, uint32 index, uint32 x, uint32 y, bool value) internal {
+    bytes32[] memory _primaryKeys = new bytes32[](3);
+    _primaryKeys[0] = bytes32(uint256((index)));
+    _primaryKeys[1] = bytes32(uint256((x)));
+    _primaryKeys[2] = bytes32(uint256((y)));
 
     _store.setField(_tableId, _primaryKeys, 0, abi.encodePacked((value)));
   }
@@ -110,19 +115,21 @@ library TileTable {
   }
 
   /* Delete all data for given keys */
-  function deleteRecord(int32 x, int32 y) internal {
-    bytes32[] memory _primaryKeys = new bytes32[](2);
-    _primaryKeys[0] = bytes32(uint256(uint32((x))));
-    _primaryKeys[1] = bytes32(uint256(uint32((y))));
+  function deleteRecord(uint32 index, uint32 x, uint32 y) internal {
+    bytes32[] memory _primaryKeys = new bytes32[](3);
+    _primaryKeys[0] = bytes32(uint256((index)));
+    _primaryKeys[1] = bytes32(uint256((x)));
+    _primaryKeys[2] = bytes32(uint256((y)));
 
     StoreSwitch.deleteRecord(_tableId, _primaryKeys);
   }
 
   /* Delete all data for given keys (using the specified store) */
-  function deleteRecord(IStore _store, int32 x, int32 y) internal {
-    bytes32[] memory _primaryKeys = new bytes32[](2);
-    _primaryKeys[0] = bytes32(uint256(uint32((x))));
-    _primaryKeys[1] = bytes32(uint256(uint32((y))));
+  function deleteRecord(IStore _store, uint32 index, uint32 x, uint32 y) internal {
+    bytes32[] memory _primaryKeys = new bytes32[](3);
+    _primaryKeys[0] = bytes32(uint256((index)));
+    _primaryKeys[1] = bytes32(uint256((x)));
+    _primaryKeys[2] = bytes32(uint256((y)));
 
     _store.deleteRecord(_tableId, _primaryKeys);
   }

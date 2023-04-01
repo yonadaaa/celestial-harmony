@@ -32,7 +32,8 @@ export interface IWorldInterface extends utils.Interface {
     "call(bytes16,bytes16,bytes)": FunctionFragment;
     "deleteRecord(uint256,bytes32[])": FunctionFragment;
     "deleteRecord(bytes16,bytes16,bytes32[])": FunctionFragment;
-    "flip(int32,int32,bool)": FunctionFragment;
+    "flip(uint32,uint32,uint32,bool)": FunctionFragment;
+    "forward()": FunctionFragment;
     "getField(uint256,bytes32[],uint8)": FunctionFragment;
     "getKeySchema(uint256)": FunctionFragment;
     "getRecord(uint256,bytes32[],bytes32)": FunctionFragment;
@@ -62,6 +63,7 @@ export interface IWorldInterface extends utils.Interface {
       | "deleteRecord(uint256,bytes32[])"
       | "deleteRecord(bytes16,bytes16,bytes32[])"
       | "flip"
+      | "forward"
       | "getField"
       | "getKeySchema"
       | "getRecord(uint256,bytes32[],bytes32)"
@@ -110,9 +112,11 @@ export interface IWorldInterface extends utils.Interface {
     values: [
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<boolean>
     ]
   ): string;
+  encodeFunctionData(functionFragment: "forward", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getField",
     values: [
@@ -257,6 +261,7 @@ export interface IWorldInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "flip", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "forward", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getField", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getKeySchema",
@@ -426,9 +431,14 @@ export interface IWorld extends BaseContract {
     ): Promise<ContractTransaction>;
 
     flip(
+      index: PromiseOrValue<BigNumberish>,
       x: PromiseOrValue<BigNumberish>,
       y: PromiseOrValue<BigNumberish>,
       value: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    forward(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -591,9 +601,14 @@ export interface IWorld extends BaseContract {
   ): Promise<ContractTransaction>;
 
   flip(
+    index: PromiseOrValue<BigNumberish>,
     x: PromiseOrValue<BigNumberish>,
     y: PromiseOrValue<BigNumberish>,
     value: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  forward(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -756,11 +771,14 @@ export interface IWorld extends BaseContract {
     ): Promise<void>;
 
     flip(
+      index: PromiseOrValue<BigNumberish>,
       x: PromiseOrValue<BigNumberish>,
       y: PromiseOrValue<BigNumberish>,
       value: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    forward(overrides?: CallOverrides): Promise<void>;
 
     getField(
       table: PromiseOrValue<BigNumberish>,
@@ -952,9 +970,14 @@ export interface IWorld extends BaseContract {
     ): Promise<BigNumber>;
 
     flip(
+      index: PromiseOrValue<BigNumberish>,
       x: PromiseOrValue<BigNumberish>,
       y: PromiseOrValue<BigNumberish>,
       value: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    forward(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1118,9 +1141,14 @@ export interface IWorld extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     flip(
+      index: PromiseOrValue<BigNumberish>,
       x: PromiseOrValue<BigNumberish>,
       y: PromiseOrValue<BigNumberish>,
       value: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    forward(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

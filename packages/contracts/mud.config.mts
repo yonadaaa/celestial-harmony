@@ -1,4 +1,4 @@
-import { mudConfig, resolveTableId } from "@latticexyz/cli";
+import { mudConfig } from "@latticexyz/cli";
 
 export default mudConfig({
   overrideSystems: {
@@ -9,21 +9,13 @@ export default mudConfig({
   },
   tables: {
     TileTable: {
-      fileSelector: "tile",
       primaryKeys: {
-        x: "int32",
-        y: "int32",
+        index: "uint32",
+        x: "uint32",
+        y: "uint32",
       },
-      schema: {
-        value: "bool",
-      },
+      schema: "bool",
     },
   },
-  modules: [
-    // {
-    //   name: "KeysWithValueModule",
-    //   root: true,
-    //   args: [resolveTableId("TileTable")],
-    // },
-  ],
+  modules: [],
 });

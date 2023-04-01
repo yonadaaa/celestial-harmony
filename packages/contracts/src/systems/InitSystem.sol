@@ -5,11 +5,16 @@ import { TileTable } from "../tables/TileTable.sol";
 
 uint256 constant ID = uint256(keccak256("system.Init"));
 
+uint256 constant N_LAYERS = 2;
+uint256 constant WIDTH = 10;
+
 contract InitSystem is System {
   function init() public {
-    for (int32 x = -10; x < 10; x++) {
-      for (int32 y = -10; y < 10; y++) {
-        TileTable.set(x, y, false);
+    for (uint32 i = 0; i < N_LAYERS; i++) {
+      for (uint32 x = 0; x < WIDTH; x++) {
+        for (uint32 y = 0; y < WIDTH; y++) {
+          TileTable.set(i, x, y, false);
+        }
       }
     }
   }

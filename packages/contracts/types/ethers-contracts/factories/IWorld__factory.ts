@@ -155,14 +155,19 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "int32",
-        name: "x",
-        type: "int32",
+        internalType: "uint32",
+        name: "index",
+        type: "uint32",
       },
       {
-        internalType: "int32",
+        internalType: "uint32",
+        name: "x",
+        type: "uint32",
+      },
+      {
+        internalType: "uint32",
         name: "y",
-        type: "int32",
+        type: "uint32",
       },
       {
         internalType: "bool",
@@ -171,6 +176,13 @@ const _abi = [
       },
     ],
     name: "flip",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "forward",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

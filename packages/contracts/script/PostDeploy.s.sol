@@ -13,7 +13,7 @@ contract PostDeploy is Script {
     vm.startBroadcast(deployerPrivateKey);
 
     IWorld world = IWorld(worldAddress);
-    // world.init();
+    world.init();
 
     vm.stopBroadcast();
   }
