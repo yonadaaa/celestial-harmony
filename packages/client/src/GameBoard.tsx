@@ -1,102 +1,80 @@
 import React from "react";
-import * as THREE from "three";
-import { useRef } from "react";
-import { Canvas, Color, ThreeElements, useThree } from "@react-three/fiber";
-import { useComponentValue, useEntityQuery } from "@latticexyz/react";
-import { useKeyboardMovement } from "./useKeyboardMovement";
-import { EntityID, getComponentValueStrict, Has } from "@latticexyz/recs";
+import { useEntityQuery } from "@latticexyz/react";
+import { getComponentValueStrict, Has } from "@latticexyz/recs";
 import { useMUD } from "./MUDContext";
 
-function Plane(props: ThreeElements["mesh"]) {
-  const ref = useRef<THREE.Mesh>(null!);
-  return (
-    <mesh {...props} ref={ref}>
-      <boxGeometry args={[10, 5, 10]} />
-      <meshStandardMaterial color="green" />
-    </mesh>
-  );
-}
-
-function Player(props: ThreeElements["mesh"] & { color: Color }) {
-  const ref = useRef<THREE.Mesh>(null!);
-  return (
-    <mesh {...props} ref={ref}>
-      <boxGeometry args={[1, 2, 1]} />
-      <meshStandardMaterial color={props.color} />
-    </mesh>
-  );
-}
-
-function Scene() {
+const Tile = ({ x, y }: { x: number; y: number }) => {
   const {
     world,
-    components: { PositionTable },
-    network: { connectedAddress },
+    worldSend,
+    components: { TileTable },
+    network: { signer },
   } = useMUD();
 
-  const address = connectedAddress.get();
-  if (!address) throw new Error("Not connected");
-  const playerEntityId = address as EntityID;
-  const playerEntity = world.registerEntity({ id: playerEntityId });
+  const tiles = useEntityQuery([Has(TileTable)]);
 
-  useKeyboardMovement();
+  const tile = tiles.find((t) => {
+    const arr = world.entities[t].split(":");
+    const xT = parseInt(arr[0]);
+    const yT = parseInt(arr[1]);
 
-  const playerPosition = useComponentValue(PositionTable, playerEntity);
-  const otherPlayers = useEntityQuery([Has(PositionTable)])
-    .filter((entity) => entity !== playerEntity)
-    .map((entity) => {
-      const position = getComponentValueStrict(PositionTable, entity);
-      return {
-        entity,
-        position,
-      };
-    });
-
-  useThree(({ camera }) => {
-    if (playerPosition) {
-      camera.position.set(
-        playerPosition.x - 5,
-        playerPosition.y + 5,
-        playerPosition.z + 5
-      );
-    } else {
-      camera.position.set(-5, 5, 5);
-    }
-    camera.rotation.order = "YXZ";
-    camera.rotation.y = -Math.PI / 4;
-    camera.rotation.x = Math.atan(-1 / Math.sqrt(2));
+    return xT === x && yT === y;
   });
 
   return (
-    <group>
-      <ambientLight />
-      <pointLight position={[10, 10, 10]} />
-      <Plane position={[0, -5, 0]} />
-      {playerPosition ? (
-        <Player
-          color={Math.floor(
-            (parseInt(world.entities[playerEntity]) * 123456) % 16777215
-          )}
-          position={[playerPosition.x, playerPosition.y, playerPosition.z]}
-        />
-      ) : null}
-      {otherPlayers.map((p, i) => (
-        <Player
-          key={i}
-          color={Math.floor(
-            (parseInt(world.entities[p.entity]) * 123456) % 16777215
-          )}
-          position={[p.position.x, p.position.y, p.position.z]}
-        />
-      ))}
-    </group>
+    <div
+      onClick={async () => {
+        // Create a World contract instance
+        const s = signer.get();
+        if (!s) throw new Error("No signer");
+
+        const txResult = await worldSend("flip", [
+          x,
+          y,
+          tile ? !getComponentValueStrict(TileTable, tile).value : true,
+        ]);
+        await txResult.wait();
+      }}
+      style={{
+        position: "fixed",
+        left: x * 100,
+        top: y * 100,
+        border: 2,
+        borderColor: "gray",
+        borderStyle: "solid",
+      }}
+    >
+      {tile ? (
+        <div
+          style={{
+            width: "100px",
+            height: "100px",
+            backgroundColor: getComponentValueStrict(TileTable, tile).value
+              ? "black"
+              : "white",
+          }}
+        ></div>
+      ) : (
+        <div
+          style={{
+            width: "100px",
+            height: "100px",
+            backgroundColor: "white",
+          }}
+        ></div>
+      )}
+    </div>
   );
-}
+};
 
 export const GameBoard = () => {
   return (
-    <Canvas style={{ height: "100vh" }}>
-      <Scene />
-    </Canvas>
+    <div>
+      <div>
+        {[0, 1, 2, 3, 4, 5].map((x) =>
+          [0, 1, 2, 3, 4, 5].map((y) => <Tile key={`${x}-{y}`} x={x} y={y} />)
+        )}
+      </div>
+    </div>
   );
 };

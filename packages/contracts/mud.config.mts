@@ -2,27 +2,28 @@ import { mudConfig, resolveTableId } from "@latticexyz/cli";
 
 export default mudConfig({
   overrideSystems: {
-    MoveSystem: {
-      fileSelector: "move",
+    FlipSystem: {
+      fileSelector: "flip",
       openAccess: true,
     },
   },
   tables: {
-    PositionTable: {
-      fileSelector: "position",
-      schema: {
+    TileTable: {
+      fileSelector: "tile",
+      primaryKeys: {
         x: "int32",
         y: "int32",
-        z: "int32",
       },
-      storeArgument: true,
+      schema: {
+        value: "bool",
+      },
     },
   },
   modules: [
-    {
-      name: "KeysWithValueModule",
-      root: true,
-      args: [resolveTableId("PositionTable")],
-    },
+    // {
+    //   name: "KeysWithValueModule",
+    //   root: true,
+    //   args: [resolveTableId("TileTable")],
+    // },
   ],
 });

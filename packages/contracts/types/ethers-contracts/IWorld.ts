@@ -32,6 +32,7 @@ export interface IWorldInterface extends utils.Interface {
     "call(bytes16,bytes16,bytes)": FunctionFragment;
     "deleteRecord(uint256,bytes32[])": FunctionFragment;
     "deleteRecord(bytes16,bytes16,bytes32[])": FunctionFragment;
+    "flip(int32,int32,bool)": FunctionFragment;
     "getField(uint256,bytes32[],uint8)": FunctionFragment;
     "getKeySchema(uint256)": FunctionFragment;
     "getRecord(uint256,bytes32[],bytes32)": FunctionFragment;
@@ -39,10 +40,10 @@ export interface IWorldInterface extends utils.Interface {
     "getSchema(uint256)": FunctionFragment;
     "grantAccess(bytes16,address)": FunctionFragment;
     "grantAccess(bytes16,bytes16,address)": FunctionFragment;
+    "init()": FunctionFragment;
     "installModule(address,bytes)": FunctionFragment;
     "installRootModule(address,bytes)": FunctionFragment;
     "isStore()": FunctionFragment;
-    "move(int32,int32,int32)": FunctionFragment;
     "pushToField(uint256,bytes32[],uint8,bytes)": FunctionFragment;
     "pushToField(bytes16,bytes16,bytes32[],uint8,bytes)": FunctionFragment;
     "registerSchema(uint256,bytes32,bytes32)": FunctionFragment;
@@ -60,6 +61,7 @@ export interface IWorldInterface extends utils.Interface {
       | "call"
       | "deleteRecord(uint256,bytes32[])"
       | "deleteRecord(bytes16,bytes16,bytes32[])"
+      | "flip"
       | "getField"
       | "getKeySchema"
       | "getRecord(uint256,bytes32[],bytes32)"
@@ -67,10 +69,10 @@ export interface IWorldInterface extends utils.Interface {
       | "getSchema"
       | "grantAccess(bytes16,address)"
       | "grantAccess(bytes16,bytes16,address)"
+      | "init"
       | "installModule"
       | "installRootModule"
       | "isStore"
-      | "move"
       | "pushToField(uint256,bytes32[],uint8,bytes)"
       | "pushToField(bytes16,bytes16,bytes32[],uint8,bytes)"
       | "registerSchema"
@@ -101,6 +103,14 @@ export interface IWorldInterface extends utils.Interface {
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>[]
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "flip",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<boolean>
     ]
   ): string;
   encodeFunctionData(
@@ -143,6 +153,7 @@ export interface IWorldInterface extends utils.Interface {
       PromiseOrValue<string>
     ]
   ): string;
+  encodeFunctionData(functionFragment: "init", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "installModule",
     values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
@@ -152,14 +163,6 @@ export interface IWorldInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(functionFragment: "isStore", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "move",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
   encodeFunctionData(
     functionFragment: "pushToField(uint256,bytes32[],uint8,bytes)",
     values: [
@@ -253,6 +256,7 @@ export interface IWorldInterface extends utils.Interface {
     functionFragment: "deleteRecord(bytes16,bytes16,bytes32[])",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "flip", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getField", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getKeySchema",
@@ -275,6 +279,7 @@ export interface IWorldInterface extends utils.Interface {
     functionFragment: "grantAccess(bytes16,bytes16,address)",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "init", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "installModule",
     data: BytesLike
@@ -284,7 +289,6 @@ export interface IWorldInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isStore", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "move", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "pushToField(uint256,bytes32[],uint8,bytes)",
     data: BytesLike
@@ -421,6 +425,13 @@ export interface IWorld extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    flip(
+      x: PromiseOrValue<BigNumberish>,
+      y: PromiseOrValue<BigNumberish>,
+      value: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     getField(
       table: PromiseOrValue<BigNumberish>,
       key: PromiseOrValue<BytesLike>[],
@@ -464,6 +475,10 @@ export interface IWorld extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    init(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     installModule(
       module: PromiseOrValue<string>,
       args: PromiseOrValue<BytesLike>,
@@ -477,13 +492,6 @@ export interface IWorld extends BaseContract {
     ): Promise<ContractTransaction>;
 
     isStore(overrides?: CallOverrides): Promise<[void]>;
-
-    move(
-      x: PromiseOrValue<BigNumberish>,
-      y: PromiseOrValue<BigNumberish>,
-      z: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
 
     "pushToField(uint256,bytes32[],uint8,bytes)"(
       table: PromiseOrValue<BigNumberish>,
@@ -582,6 +590,13 @@ export interface IWorld extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  flip(
+    x: PromiseOrValue<BigNumberish>,
+    y: PromiseOrValue<BigNumberish>,
+    value: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   getField(
     table: PromiseOrValue<BigNumberish>,
     key: PromiseOrValue<BytesLike>[],
@@ -625,6 +640,10 @@ export interface IWorld extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  init(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   installModule(
     module: PromiseOrValue<string>,
     args: PromiseOrValue<BytesLike>,
@@ -638,13 +657,6 @@ export interface IWorld extends BaseContract {
   ): Promise<ContractTransaction>;
 
   isStore(overrides?: CallOverrides): Promise<void>;
-
-  move(
-    x: PromiseOrValue<BigNumberish>,
-    y: PromiseOrValue<BigNumberish>,
-    z: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
 
   "pushToField(uint256,bytes32[],uint8,bytes)"(
     table: PromiseOrValue<BigNumberish>,
@@ -743,6 +755,13 @@ export interface IWorld extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    flip(
+      x: PromiseOrValue<BigNumberish>,
+      y: PromiseOrValue<BigNumberish>,
+      value: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     getField(
       table: PromiseOrValue<BigNumberish>,
       key: PromiseOrValue<BytesLike>[],
@@ -786,6 +805,8 @@ export interface IWorld extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    init(overrides?: CallOverrides): Promise<void>;
+
     installModule(
       module: PromiseOrValue<string>,
       args: PromiseOrValue<BytesLike>,
@@ -799,13 +820,6 @@ export interface IWorld extends BaseContract {
     ): Promise<void>;
 
     isStore(overrides?: CallOverrides): Promise<void>;
-
-    move(
-      x: PromiseOrValue<BigNumberish>,
-      y: PromiseOrValue<BigNumberish>,
-      z: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     "pushToField(uint256,bytes32[],uint8,bytes)"(
       table: PromiseOrValue<BigNumberish>,
@@ -937,6 +951,13 @@ export interface IWorld extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    flip(
+      x: PromiseOrValue<BigNumberish>,
+      y: PromiseOrValue<BigNumberish>,
+      value: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     getField(
       table: PromiseOrValue<BigNumberish>,
       key: PromiseOrValue<BytesLike>[],
@@ -980,6 +1001,10 @@ export interface IWorld extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    init(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     installModule(
       module: PromiseOrValue<string>,
       args: PromiseOrValue<BytesLike>,
@@ -993,13 +1018,6 @@ export interface IWorld extends BaseContract {
     ): Promise<BigNumber>;
 
     isStore(overrides?: CallOverrides): Promise<BigNumber>;
-
-    move(
-      x: PromiseOrValue<BigNumberish>,
-      y: PromiseOrValue<BigNumberish>,
-      z: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
 
     "pushToField(uint256,bytes32[],uint8,bytes)"(
       table: PromiseOrValue<BigNumberish>,
@@ -1099,6 +1117,13 @@ export interface IWorld extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    flip(
+      x: PromiseOrValue<BigNumberish>,
+      y: PromiseOrValue<BigNumberish>,
+      value: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     getField(
       table: PromiseOrValue<BigNumberish>,
       key: PromiseOrValue<BytesLike>[],
@@ -1142,6 +1167,10 @@ export interface IWorld extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    init(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     installModule(
       module: PromiseOrValue<string>,
       args: PromiseOrValue<BytesLike>,
@@ -1155,13 +1184,6 @@ export interface IWorld extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     isStore(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    move(
-      x: PromiseOrValue<BigNumberish>,
-      y: PromiseOrValue<BigNumberish>,
-      z: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
 
     "pushToField(uint256,bytes32[],uint8,bytes)"(
       table: PromiseOrValue<BigNumberish>,
