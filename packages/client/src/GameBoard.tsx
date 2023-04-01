@@ -42,6 +42,8 @@ const Tile = ({ x, y }: { x: number; y: number }) => {
         border: 2,
         borderColor: "gray",
         borderStyle: "solid",
+        width: "100px",
+        height: "100px",
       }}
     >
       {tile ? (
