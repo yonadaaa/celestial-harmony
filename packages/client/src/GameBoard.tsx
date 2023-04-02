@@ -48,6 +48,7 @@ function Tile(
         <Clone
           object={props.object}
           position={[props.x, -props.index * 5 + 0.5, props.y]}
+          scale={[0.9, 0.9, 0.9]}
         />
       ) : null}
       <mesh
@@ -98,10 +99,11 @@ function Scene() {
               <Tile
                 key={`${x},${y}`}
                 object={tile_fire.scene}
-                position={[x, -index * 5, y]}
+                position={[x, -index * 5 + 0.375, y]}
                 x={x}
                 y={y}
                 index={index}
+                scale={[1, 0.25, 1]}
               />
             ))
           )
