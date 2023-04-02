@@ -16,7 +16,12 @@ const WIDTH = 6;
 const HEIGHT = 6;
 
 function Tile(
-  props: ThreeElements["mesh"] & { index: number; x: number; y: number }
+  props: ThreeElements["mesh"] & {
+    index: number;
+    x: number;
+    y: number;
+    object: any;
+  }
 ) {
   const {
     world,
@@ -38,31 +43,44 @@ function Tile(
 
   const ref = useRef<THREE.Mesh>(null!);
   return (
-    <mesh
-      onClick={async (event) => {
-        event.stopPropagation();
-        // Create a World contract instance
-        const s = signer.get();
-        if (!s) throw new Error("No signer");
-
-        const txResult = await worldSend("flip", [
-          props.index,
-          props.x,
-          props.y,
-          tile ? !getComponentValueStrict(TileTable, tile).value : true,
-        ]);
-        await txResult.wait();
-      }}
-      {...props}
-      ref={ref}
-    >
-      <boxGeometry args={[0.9, 0.9, 0.9]} />
+    <group>
       {tile && getComponentValueStrict(TileTable, tile).value ? (
-        <meshStandardMaterial color={[1,1, 4]} emissive={[.1,.1,1]} toneMapped={false}/>
-      ) : (
-        <meshStandardMaterial color={"red"} />
-      )}
-    </mesh>
+        <Clone
+          object={props.object}
+          position={[props.x, props.index * 5 - 4.5, props.y]}
+        />
+      ) : null}
+      <mesh
+        onClick={async (event) => {
+          event.stopPropagation();
+          // Create a World contract instance
+          const s = signer.get();
+          if (!s) throw new Error("No signer");
+
+          const txResult = await worldSend("flip", [
+            props.index,
+            props.x,
+            props.y,
+            tile ? !getComponentValueStrict(TileTable, tile).value : true,
+          ]);
+          await txResult.wait();
+        }}
+        {...props}
+        ref={ref}
+      >
+        <boxGeometry args={[0.9, 0.9, 0.9]} />
+
+        {tile && getComponentValueStrict(TileTable, tile).value ? (
+          <meshStandardMaterial
+            color={[1, 1, 4]}
+            emissive={[0.1, 0.1, 1]}
+            toneMapped={false}
+          />
+        ) : (
+          <meshStandardMaterial color={"red"} />
+        )}
+      </mesh>
+    </group>
   );
 }
 
@@ -76,23 +94,16 @@ function Scene() {
       <group>
         {[...Array(N_LAYERS).keys()].map((index) =>
           [...Array(WIDTH).keys()].map((x) =>
-            [...Array(HEIGHT).keys()].map((y) => {
-              return (
-                <group>
-                  <Clone
-                    object={tile_fire.scene}
-                    position={[x, index * 5 - 4.5, y]}
-                  />
-                  <Tile
-                    key={`${x},${y}`}
-                    position={[x, index * 5 - 5, y]}
-                    x={x}
-                    y={y}
-                    index={index}
-                  />
-                </group>
-              );
-            })
+            [...Array(HEIGHT).keys()].map((y) => (
+              <Tile
+                key={`${x},${y}`}
+                object={tile_fire.scene}
+                position={[x, index * 5 - 5, y]}
+                x={x}
+                y={y}
+                index={index}
+              />
+            ))
           )
         )}
       </group>
@@ -123,7 +134,7 @@ export const GameBoard = () => {
       <Canvas orthographic camera={{ zoom: 70, position: [-1, 1, -1] }}>
         <color attach="background" args={["#444"]} />
         <Effects disableGamma>
-          <unrealBloomPass threshold={.5} strength={.01} radius={.75} />
+          <unrealBloomPass threshold={0.5} strength={0.01} radius={0.75} />
         </Effects>
 
         <Scene />
