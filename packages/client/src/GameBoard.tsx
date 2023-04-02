@@ -115,6 +115,7 @@ function Scene({ view }: { view: number }) {
       <group>
         {[...Array(N_LAYERS).keys()].map((index) => (
           <group
+            key={index}
             position={[
               0,
               view === 0
