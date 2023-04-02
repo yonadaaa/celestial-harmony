@@ -42,10 +42,11 @@ function Tile(
     return i === props.index && xT === props.x && yT === props.y;
   });
 
+  console.log(tile && getComponentValueStrict(TileTable, tile).value);
   const ref = useRef<THREE.Mesh>(null!);
   return (
     <group>
-      {tile && getComponentValueStrict(TileTable, tile).value ? (
+      {tile && getComponentValueStrict(TileTable, tile).value === 1 ? (
         <Clone
           object={props.object}
           position={[props.x, 0.125, props.y]}
@@ -59,11 +60,11 @@ function Tile(
           const s = signer.get();
           if (!s) throw new Error("No signer");
 
-          const txResult = await worldSend("flip", [
+          const txResult = await worldSend("set", [
             props.index,
             props.x,
             props.y,
-            tile ? !getComponentValueStrict(TileTable, tile).value : true,
+            getComponentValueStrict(TileTable, tile).value === 1 ? 0 : 1,
           ]);
           await txResult.wait();
         }}
@@ -71,14 +72,14 @@ function Tile(
         ref={ref}
       >
         <boxGeometry args={[0.9, 0.9, 0.9]} />
-        {tile && getComponentValueStrict(TileTable, tile).value ? (
+        {tile && getComponentValueStrict(TileTable, tile).value === 1 ? (
           <meshStandardMaterial
             color={[1, 1, 4]}
             emissive={[0.1, 0.1, 1]}
             toneMapped={false}
           />
         ) : (
-          <meshStandardMaterial color={"red"} />
+          <meshStandardMaterial color={props.index === 0 ? "cyan" : "red"} />
         )}
       </mesh>
     </group>
@@ -119,7 +120,7 @@ function Scene({ view }: { view: number }) {
             position={[
               0,
               view === 0
-                ? -index * 5 + 0.375
+                ? -index * 5
                 : view === 1 && index != 0
                 ? 1000
                 : view === 2 && index != 1
@@ -151,9 +152,7 @@ function Scene({ view }: { view: number }) {
 
 export const GameBoard = () => {
   const {
-    world,
     worldSend,
-    components: { BudgetTable },
     network: { signer },
   } = useMUD();
 

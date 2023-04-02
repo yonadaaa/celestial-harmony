@@ -24,7 +24,7 @@ library TileTable {
   /** Get the table's schema */
   function getSchema() internal pure returns (Schema) {
     SchemaType[] memory _schema = new SchemaType[](1);
-    _schema[0] = SchemaType.BOOL;
+    _schema[0] = SchemaType.UINT8;
 
     return SchemaLib.encode(_schema);
   }
@@ -68,29 +68,29 @@ library TileTable {
   }
 
   /** Get value */
-  function get(uint32 index, uint32 x, uint32 y) internal view returns (bool value) {
+  function get(uint32 index, uint32 x, uint32 y) internal view returns (uint8 value) {
     bytes32[] memory _primaryKeys = new bytes32[](3);
     _primaryKeys[0] = bytes32(uint256((index)));
     _primaryKeys[1] = bytes32(uint256((x)));
     _primaryKeys[2] = bytes32(uint256((y)));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _primaryKeys, 0);
-    return (_toBool(uint8(Bytes.slice1(_blob, 0))));
+    return (uint8(Bytes.slice1(_blob, 0)));
   }
 
   /** Get value (using the specified store) */
-  function get(IStore _store, uint32 index, uint32 x, uint32 y) internal view returns (bool value) {
+  function get(IStore _store, uint32 index, uint32 x, uint32 y) internal view returns (uint8 value) {
     bytes32[] memory _primaryKeys = new bytes32[](3);
     _primaryKeys[0] = bytes32(uint256((index)));
     _primaryKeys[1] = bytes32(uint256((x)));
     _primaryKeys[2] = bytes32(uint256((y)));
 
     bytes memory _blob = _store.getField(_tableId, _primaryKeys, 0);
-    return (_toBool(uint8(Bytes.slice1(_blob, 0))));
+    return (uint8(Bytes.slice1(_blob, 0)));
   }
 
   /** Set value */
-  function set(uint32 index, uint32 x, uint32 y, bool value) internal {
+  function set(uint32 index, uint32 x, uint32 y, uint8 value) internal {
     bytes32[] memory _primaryKeys = new bytes32[](3);
     _primaryKeys[0] = bytes32(uint256((index)));
     _primaryKeys[1] = bytes32(uint256((x)));
@@ -100,7 +100,7 @@ library TileTable {
   }
 
   /** Set value (using the specified store) */
-  function set(IStore _store, uint32 index, uint32 x, uint32 y, bool value) internal {
+  function set(IStore _store, uint32 index, uint32 x, uint32 y, uint8 value) internal {
     bytes32[] memory _primaryKeys = new bytes32[](3);
     _primaryKeys[0] = bytes32(uint256((index)));
     _primaryKeys[1] = bytes32(uint256((x)));
@@ -110,7 +110,7 @@ library TileTable {
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(bool value) internal view returns (bytes memory) {
+  function encode(uint8 value) internal view returns (bytes memory) {
     return abi.encodePacked(value);
   }
 
@@ -132,11 +132,5 @@ library TileTable {
     _primaryKeys[2] = bytes32(uint256((y)));
 
     _store.deleteRecord(_tableId, _primaryKeys);
-  }
-}
-
-function _toBool(uint8 value) pure returns (bool result) {
-  assembly {
-    result := value
   }
 }

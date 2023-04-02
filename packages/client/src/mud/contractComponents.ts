@@ -25,7 +25,7 @@ export function defineContractComponents(world: World) {
       return defineComponent(
         world,
         {
-          value: RecsType.Boolean,
+          value: RecsType.Number,
         },
         {
           metadata: {

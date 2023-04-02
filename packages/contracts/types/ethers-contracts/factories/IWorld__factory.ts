@@ -153,34 +153,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint32",
-        name: "index",
-        type: "uint32",
-      },
-      {
-        internalType: "uint32",
-        name: "x",
-        type: "uint32",
-      },
-      {
-        internalType: "uint32",
-        name: "y",
-        type: "uint32",
-      },
-      {
-        internalType: "bool",
-        name: "value",
-        type: "bool",
-      },
-    ],
-    name: "flip",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     inputs: [],
     name: "forward",
     outputs: [],
@@ -519,6 +491,34 @@ const _abi = [
       },
     ],
     name: "retractAccess",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint32",
+        name: "index",
+        type: "uint32",
+      },
+      {
+        internalType: "uint32",
+        name: "x",
+        type: "uint32",
+      },
+      {
+        internalType: "uint32",
+        name: "y",
+        type: "uint32",
+      },
+      {
+        internalType: "uint8",
+        name: "value",
+        type: "uint8",
+      },
+    ],
+    name: "set",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

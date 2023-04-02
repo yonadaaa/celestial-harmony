@@ -15,7 +15,7 @@ contract InitSystem is System {
       for (uint32 x = 0; x < WIDTH; x++) {
         for (uint32 y = 0; y < WIDTH; y++) {
           BudgetTable.set(i, 1);
-          TileTable.set(i, x, y, false);
+          TileTable.set(i, x, y, 0);
         }
       }
     }

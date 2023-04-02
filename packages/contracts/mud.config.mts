@@ -14,7 +14,7 @@ export default mudConfig({
         x: "uint32",
         y: "uint32",
       },
-      schema: "bool",
+      schema: "uint8",
     },
   },
   modules: [],

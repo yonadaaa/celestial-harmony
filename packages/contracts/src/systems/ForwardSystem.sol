@@ -13,8 +13,8 @@ contract ForwardSystem is System {
 
     for (uint32 x = 0; x < WIDTH; x++) {
       for (uint32 y = 0; y < WIDTH; y++) {
-        bool a = TileTable.get(0, x, y);
-        bool b = TileTable.get(1, x, y);
+        uint8 a = TileTable.get(0, x, y);
+        uint8 b = TileTable.get(1, x, y);
 
         bool result = a != b;
 
@@ -23,7 +23,7 @@ contract ForwardSystem is System {
         }
 
         for (uint32 i = 0; i < N_LAYERS; i++) {
-          TileTable.set(i, x, y, result);
+          TileTable.set(i, x, y, result ? 1 : 0);
         }
       }
     }
