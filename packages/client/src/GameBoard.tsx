@@ -8,6 +8,7 @@ import { useMUD } from "./MUDContext";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Clone, Effects, Text } from "@react-three/drei";
 import { UnrealBloomPass } from "three-stdlib";
+import { Object3D } from "three";
 
 extend({ UnrealBloomPass });
 
@@ -20,7 +21,7 @@ function Tile(
     index: number;
     x: number;
     y: number;
-    object: any;
+    object: Object3D;
   }
 ) {
   const {
@@ -70,7 +71,6 @@ function Tile(
         ref={ref}
       >
         <boxGeometry args={[0.9, 0.9, 0.9]} />
-
         {tile && getComponentValueStrict(TileTable, tile).value ? (
           <meshStandardMaterial
             color={[1, 1, 4]}
@@ -115,16 +115,17 @@ function Scene({ view }: { view: number }) {
       <group>
         {[...Array(N_LAYERS).keys()].map((index) => (
           <group
-            visible={
+            position={[
+              0,
               view === 0
-                ? true
-                : view === 1 && index === 0
-                ? true
-                : view === 2 && index === 1
-                ? true
-                : false
-            }
-            position={[0, view === 0 ? -index * 5 + 0.375 : -2, 0]}
+                ? -index * 5 + 0.375
+                : view === 1 && index != 0
+                ? 1000
+                : view === 2 && index != 1
+                ? 1000
+                : -2,
+              0,
+            ]}
           >
             <Budget index={index} />
             {[...Array(WIDTH).keys()].map((x) =>
