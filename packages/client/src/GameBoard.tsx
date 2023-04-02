@@ -6,7 +6,7 @@ import { getComponentValueStrict, Has } from "@latticexyz/recs";
 import { useMUD } from "./MUDContext";
 
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Clone, Effects } from "@react-three/drei";
+import { Clone, Effects, Text } from "@react-three/drei";
 import { UnrealBloomPass } from "three-stdlib";
 
 extend({ UnrealBloomPass });
@@ -47,7 +47,7 @@ function Tile(
       {tile && getComponentValueStrict(TileTable, tile).value ? (
         <Clone
           object={props.object}
-          position={[props.x, props.index * 5 - 4.5, props.y]}
+          position={[props.x, -props.index * 5 + 0.5, props.y]}
         />
       ) : null}
       <mesh
@@ -98,7 +98,7 @@ function Scene() {
               <Tile
                 key={`${x},${y}`}
                 object={tile_fire.scene}
-                position={[x, index * 5 - 5, y]}
+                position={[x, -index * 5, y]}
                 x={x}
                 y={y}
                 index={index}
@@ -113,13 +113,42 @@ function Scene() {
 
 export const GameBoard = () => {
   const {
+    world,
     worldSend,
+    components: { BudgetTable },
     network: { signer },
   } = useMUD();
 
+  const budgets = useEntityQuery([Has(BudgetTable)]).map((i) => {
+    return {
+      entityIndex: parseInt(world.entities[i]),
+      budget: getComponentValueStrict(BudgetTable, i),
+    };
+  });
+
   return (
     <div style={{ height: "100vh" }}>
+      <Canvas orthographic camera={{ zoom: 70, position: [-1, 1, -1] }}>
+        {budgets.map((b) => (
+          <Text
+            position={[1, -b.entityIndex * 5 + 0.5, 6]}
+            scale={[1, 1, 1]}
+            color="white"
+            rotation={[0, Math.PI, 0]}
+          >
+            BUDGET: {b.budget.value}
+          </Text>
+        ))}
+        <color attach="background" args={["#444"]} />
+
+        <Effects disableGamma>
+          <unrealBloomPass threshold={0.5} strength={0.01} radius={0.75} />
+        </Effects>
+
+        <Scene />
+      </Canvas>
       <button
+        style={{ position: "absolute", left: 0, top: 0 }}
         onClick={async () => {
           // Create a World contract instance
           const s = signer.get();
@@ -131,14 +160,6 @@ export const GameBoard = () => {
       >
         HARVEST
       </button>
-      <Canvas orthographic camera={{ zoom: 70, position: [-1, 1, -1] }}>
-        <color attach="background" args={["#444"]} />
-        <Effects disableGamma>
-          <unrealBloomPass threshold={0.5} strength={0.01} radius={0.75} />
-        </Effects>
-
-        <Scene />
-      </Canvas>
     </div>
   );
 };

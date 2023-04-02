@@ -1,13 +1,13 @@
 import { mudConfig } from "@latticexyz/cli";
 
 export default mudConfig({
-  overrideSystems: {
-    FlipSystem: {
-      fileSelector: "flip",
-      openAccess: true,
-    },
-  },
   tables: {
+    BudgetTable: {
+      primaryKeys: {
+        index: "uint32",
+      },
+      schema: "uint32",
+    },
     TileTable: {
       primaryKeys: {
         index: "uint32",
