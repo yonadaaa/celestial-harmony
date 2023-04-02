@@ -58,7 +58,7 @@ function Tile(
     >
       <boxGeometry args={[0.9, 0.9, 0.9]} />
       {tile && getComponentValueStrict(TileTable, tile).value ? (
-        <meshStandardMaterial color={"blue"} />
+        <meshStandardMaterial color={[1,1, 4]} emissive={[.1,.1,1]} toneMapped={false}/>
       ) : (
         <meshStandardMaterial color={"red"} />
       )}
@@ -67,7 +67,7 @@ function Tile(
 }
 
 function Scene() {
-  const tile_fire = useLoader(GLTFLoader, "/tile_fire.glb");
+  const tile_fire = useLoader(GLTFLoader, "/tile_water.glb");
 
   return (
     <group>
@@ -123,8 +123,7 @@ export const GameBoard = () => {
       <Canvas orthographic camera={{ zoom: 70, position: [-1, 1, -1] }}>
         <color attach="background" args={["#444"]} />
         <Effects disableGamma>
-          {/* threshhold has to be 1, so nothing at all gets bloom by default */}
-          <unrealBloomPass threshold={0.25} strength={0.5} radius={1} />
+          <unrealBloomPass threshold={.5} strength={.01} radius={.75} />
         </Effects>
 
         <Scene />
