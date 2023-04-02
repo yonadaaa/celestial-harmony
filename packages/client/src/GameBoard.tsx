@@ -9,7 +9,6 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Clone, Effects, Text } from "@react-three/drei";
 import { UnrealBloomPass } from "three-stdlib";
 import { Object3D } from "three";
-import { SingletonID } from "@latticexyz/network";
 
 extend({ UnrealBloomPass });
 
@@ -22,7 +21,7 @@ function Tile(
     index: number;
     x: number;
     y: number;
-    object: Object3D;
+    objects: Object3D[];
   }
 ) {
   const {
@@ -46,27 +45,33 @@ function Tile(
   const ref = useRef<THREE.Mesh>(null!);
   return (
     <group>
-      {tile && getComponentValueStrict(TileTable, tile).value === 1 ? (
+      {tile ? (
         <Clone
-          object={props.object}
+          object={
+            props.objects[getComponentValueStrict(TileTable, tile).value].scene
+          }
           position={[props.x, 0.125, props.y]}
           scale={[0.9, 0.9, 0.9]}
         />
       ) : null}
       <mesh
         onClick={async (event) => {
-          event.stopPropagation();
-          // Create a World contract instance
-          const s = signer.get();
-          if (!s) throw new Error("No signer");
+          if (tile) {
+            event.stopPropagation();
+            // Create a World contract instance
+            const s = signer.get();
+            if (!s) throw new Error("No signer");
 
-          const txResult = await worldSend("set", [
-            props.index,
-            props.x,
-            props.y,
-            getComponentValueStrict(TileTable, tile).value === 1 ? 0 : 1,
-          ]);
-          await txResult.wait();
+            const value = getComponentValueStrict(TileTable, tile).value;
+
+            const txResult = await worldSend("set", [
+              props.index,
+              props.x,
+              props.y,
+              value === 0 ? 1 : value === 1 ? 2 : 0,
+            ]);
+            await txResult.wait();
+          }
         }}
         {...props}
         ref={ref}
@@ -131,7 +136,12 @@ const Timestamp = () => {
 };
 
 function Scene({ view }: { view: number }) {
-  const tile_fire = useLoader(GLTFLoader, "/tile_water.glb");
+  const tile_base = useLoader(GLTFLoader, "/tile_base.glb");
+  const tile_fire = useLoader(GLTFLoader, "/tile_fire.glb");
+  const tile_water = useLoader(GLTFLoader, "/tile_water.glb");
+  const tile_air = useLoader(GLTFLoader, "/tile_air.glb");
+
+  const objects = [tile_base, tile_fire, tile_water];
 
   return (
     <group>
@@ -159,7 +169,7 @@ function Scene({ view }: { view: number }) {
               [...Array(HEIGHT).keys()].map((y) => (
                 <Tile
                   key={`${x},${y}`}
-                  object={tile_fire.scene}
+                  objects={objects}
                   position={[x, 0, y]}
                   x={x}
                   y={y}

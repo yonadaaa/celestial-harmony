@@ -8,11 +8,11 @@ uint256 constant ID = uint256(keccak256("system.Set"));
 
 contract SetSystem is System {
   function set(uint32 index, uint32 x, uint32 y, uint8 value) public {
-    if (value == 0) {
-      BudgetTable.set(index, BudgetTable.get(index) + 1);
-    } else {
-      BudgetTable.set(index, BudgetTable.get(index) - 1);
-    }
+    // if (value == 0) {
+    //   BudgetTable.set(index, BudgetTable.get(index) + 1);
+    // } else {
+    //   BudgetTable.set(index, BudgetTable.get(index) - 1);
+    // }
     TileTable.set(index, x, y, value);
   }
 }
