@@ -120,7 +120,7 @@ const Timestamp = () => {
 
   return (
     <div className="timestamp">
-      <span>Last Harvest:</span>
+      <span>Last Prayer:</span>
       {timestamp
         ? new Date(parseInt(timestamp?.value) * 1000).toLocaleTimeString()
         : 0}
