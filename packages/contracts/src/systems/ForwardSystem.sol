@@ -42,7 +42,7 @@ contract ForwardSystem is System {
     }
 
     for (uint32 i = 0; i < N_LAYERS; i++) {
-      BudgetTable.set(i, 4);
+      BudgetTable.set(i, 1);
     }
   }
 }

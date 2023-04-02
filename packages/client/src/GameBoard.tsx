@@ -103,7 +103,7 @@ const Info = ({ index }: { index: number }) => {
 
   return (
     <div className={`layer${index}`}>
-      <div>Layer: {index}</div>
+      <div>{index === 0 ? "THE HEAVENS" : "EARTH"}</div>
       <div>BUDGET: {budget ? budget.value : 0}</div>
       <div>SCORE: {score ? score.value : 0}</div>
     </div>
