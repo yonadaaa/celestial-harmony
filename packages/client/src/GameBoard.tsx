@@ -1,7 +1,7 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, ThreeElements, useLoader, extend } from "@react-three/fiber";
-import { useEntityQuery } from "@latticexyz/react";
+import { useComponentValue, useEntityQuery } from "@latticexyz/react";
 import { getComponentValueStrict, Has } from "@latticexyz/recs";
 import { useMUD } from "./MUDContext";
 
@@ -47,7 +47,7 @@ function Tile(
       {tile && getComponentValueStrict(TileTable, tile).value ? (
         <Clone
           object={props.object}
-          position={[props.x, -props.index * 5 + 0.5, props.y]}
+          position={[props.x, 0.125, props.y]}
           scale={[0.9, 0.9, 0.9]}
         />
       ) : null}
@@ -85,7 +85,27 @@ function Tile(
   );
 }
 
-function Scene() {
+const Budget = ({ index }: { index: number }) => {
+  const {
+    world,
+    components: { BudgetTable },
+  } = useMUD();
+
+  const arr = world.entityToIndex.get(`0x0${index}`);
+  const budget = useComponentValue(BudgetTable, arr);
+
+  return (
+    <Text
+      position={[3, 0, 6]}
+      scale={[1, 1, 1]}
+      color="white"
+      rotation={[0, Math.PI, 0]}
+    >
+      BUDGET: {budget?.value}
+    </Text>
+  );
+};
+function Scene({ view }: { view: number }) {
   const tile_fire = useLoader(GLTFLoader, "/tile_water.glb");
 
   return (
@@ -93,21 +113,35 @@ function Scene() {
       <pointLight position={[10, 10, 10]} intensity={1} />
 
       <group>
-        {[...Array(N_LAYERS).keys()].map((index) =>
-          [...Array(WIDTH).keys()].map((x) =>
-            [...Array(HEIGHT).keys()].map((y) => (
-              <Tile
-                key={`${x},${y}`}
-                object={tile_fire.scene}
-                position={[x, -index * 5 + 0.375, y]}
-                x={x}
-                y={y}
-                index={index}
-                scale={[1, 0.25, 1]}
-              />
-            ))
-          )
-        )}
+        {[...Array(N_LAYERS).keys()].map((index) => (
+          <group
+            visible={
+              view === 0
+                ? true
+                : view === 1 && index === 0
+                ? true
+                : view === 2 && index === 1
+                ? true
+                : false
+            }
+            position={[0, view === 0 ? -index * 5 + 0.375 : -2, 0]}
+          >
+            <Budget index={index} />
+            {[...Array(WIDTH).keys()].map((x) =>
+              [...Array(HEIGHT).keys()].map((y) => (
+                <Tile
+                  key={`${x},${y}`}
+                  object={tile_fire.scene}
+                  position={[x, 0, y]}
+                  x={x}
+                  y={y}
+                  index={index}
+                  scale={[1, 0.25, 1]}
+                />
+              ))
+            )}
+          </group>
+        ))}
       </group>
     </group>
   );
@@ -121,48 +155,54 @@ export const GameBoard = () => {
     network: { signer },
   } = useMUD();
 
-  const budgets = useEntityQuery([Has(BudgetTable)]).map((i) => {
-    return {
-      entityIndex: parseInt(world.entities[i]),
-      budget: getComponentValueStrict(BudgetTable, i),
-    };
-  });
+  const [view, setView] = useState(0);
 
   return (
     <div style={{ height: "100vh" }}>
       <Canvas orthographic camera={{ zoom: 70, position: [-1, 1, -1] }}>
-        {budgets.map((b) => (
-          <Text
-            key={b.entityIndex}
-            position={[1, -b.entityIndex * 5 + 0.5, 6]}
-            scale={[1, 1, 1]}
-            color="white"
-            rotation={[0, Math.PI, 0]}
-          >
-            BUDGET: {b.budget.value}
-          </Text>
-        ))}
         <color attach="background" args={["#444"]} />
 
         <Effects disableGamma>
           <unrealBloomPass threshold={0.5} strength={0.01} radius={0.75} />
         </Effects>
 
-        <Scene />
+        <Scene view={view} />
       </Canvas>
-      <button
-        style={{ position: "absolute", left: 0, top: 0 }}
-        onClick={async () => {
-          // Create a World contract instance
-          const s = signer.get();
-          if (!s) throw new Error("No signer");
+      <div style={{ position: "absolute", left: 0, top: 0 }}>
+        <button
+          onClick={async () => {
+            // Create a World contract instance
+            const s = signer.get();
+            if (!s) throw new Error("No signer");
 
-          const txResult = await worldSend("forward", []);
-          await txResult.wait();
-        }}
-      >
-        HARVEST
-      </button>
+            const txResult = await worldSend("forward", []);
+            await txResult.wait();
+          }}
+        >
+          HARVEST
+        </button>
+        <button
+          onClick={async () => {
+            setView(0);
+          }}
+        >
+          GOD
+        </button>
+        <button
+          onClick={async () => {
+            setView(1);
+          }}
+        >
+          LAYER 0
+        </button>
+        <button
+          onClick={async () => {
+            setView(2);
+          }}
+        >
+          LAYER 1
+        </button>
+      </div>
     </div>
   );
 };
