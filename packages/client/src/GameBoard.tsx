@@ -221,14 +221,14 @@ export const GameBoard = () => {
             setView(1);
           }}
         >
-          LAYER 0
+          THE HEAVENS
         </button>
         <button
           onClick={async () => {
             setView(2);
           }}
         >
-          LAYER 1
+          EARTH
         </button>
         {[0, 1].map((i) => (
           <Info index={i} />
