@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>celestial harmony</title>
   <style>
-
     @font-face {
       font-family: "Durrow";
       src: url("Durrow.ttf") format("truetype");
@@ -19,16 +18,16 @@
     }
 
     .prayer_button {
-      position:fixed;
-      outline:none;
+      position: fixed;
+      outline: none;
       border: none;
-      background-color: rgba(0,0,0,0);
-      right:10px;
-      top:10px;
-      width:220px;
-      height:220px;
+      background-color: rgba(0, 0, 0, 0);
+      right: 10px;
+      top: 10px;
+      width: 220px;
+      height: 220px;
       background-image: url("pray_unpressed.png");
-      background-size:contain;
+      background-size: contain;
       cursor: pointer;
     }
 
@@ -38,25 +37,88 @@
     }
 
     button {
-      font-family:Durrow;
-      font-size:20px;
+      font-family: Durrow;
+      font-size: 20px;
     }
 
     body {
-      font-family:Durrow;
-      font-size:20px;
+      font-family: Durrow;
+      font-size: 20px;
+    }
+
+    #splash {
+      background-image: url("splash.jpg");
+      position: fixed;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 100%;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      z-index: 100000;
+      text-align: center;
+
+    }
+
+    #splash a {}
+
+    .parent {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .layer0 {
+      position: absolute;
+      left: 10px;
+      top: 40%;
+      color: #fff;
+      font-size: 24px;
+      text-shadow: 2px 2px #000000;
+    }
+
+    .layer1 {
+      position: absolute;
+      right: 10px;
+      top: 40%;
+      color: #fff;
+      font-size: 24px;
+      text-shadow: 2px 2px #000000;
     }
   </style>
 </head>
 
 <body>
-  <!-- <div id="TEST" style="position:fixed;z-index:100;left:10px;top:10px">TEST</div> -->
+  <div id="splash">
+    <!-- <a href="">Begin...</a> -->
+  </div>
+
   <div id="react-root"></div>
   <script type="module" src="/src/index.tsx"></script>
   <div id="pray">
-    
-    <!-- <img src="pray_unpressed.png"> -->
+
   </div>
+
+
+  <script>
+
+    function fadeOutEffect() {
+      var fadeTarget = document.getElementById("splash");
+      var fadeEffect = setInterval(function () {
+        if (!fadeTarget.style.opacity) {
+          fadeTarget.style.opacity = 1;
+        }
+        if (fadeTarget.style.opacity > 0) {
+          fadeTarget.style.opacity -= 0.1;
+        } else {
+          clearInterval(fadeEffect);
+        }
+      }, 200);
+    }
+
+    document.getElementById("splash").addEventListener('click', fadeOutEffect);
+
+  </script>
 </body>
 
 </html>
