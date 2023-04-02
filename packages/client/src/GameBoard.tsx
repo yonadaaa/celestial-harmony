@@ -131,6 +131,7 @@ export const GameBoard = () => {
       <Canvas orthographic camera={{ zoom: 70, position: [-1, 1, -1] }}>
         {budgets.map((b) => (
           <Text
+            key={b.entityIndex}
             position={[1, -b.entityIndex * 5 + 0.5, 6]}
             scale={[1, 1, 1]}
             color="white"
