@@ -1,13 +1,24 @@
 import React, { useRef, useState } from "react";
 import * as THREE from "three";
-import { Canvas, Color, ThreeElements, useThree } from "@react-three/fiber";
+import { Canvas, Color, ThreeElements, useThree, useLoader, extend } from "@react-three/fiber";
 import { useEntityQuery } from "@latticexyz/react";
 import { getComponentValueStrict, Has } from "@latticexyz/recs";
 import { useMUD } from "./MUDContext";
 
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { Effects } from '@react-three/drei'
+import { UnrealBloomPass } from 'three-stdlib'
+
+extend({ UnrealBloomPass });
+
+
 const N_LAYERS = 2;
-const WIDTH = 10;
-const HEIGHT = 10;
+const WIDTH = 6;
+const HEIGHT = 6;
+
+
+
+
 
 function Tile(
   props: ThreeElements["mesh"] & { index: number; x: number; y: number }
@@ -61,14 +72,29 @@ function Tile(
 }
 
 function Scene() {
+
+  const tile_fire = useLoader(GLTFLoader, '/tile_fire.glb')
+
+  // const tile_whatever = useLoader(GLTFLoader, '/tile_whatever.glb')
+
   return (
     <group>
-      <ambientLight />
-      <pointLight position={[10, 10, 10]} />
+
+      <primitive
+        object={tile_fire.scene}
+        position={[7, 0, 0]}
+      />
+
+      {/* <ambientLight /> */}
+      <pointLight position={[10, 10, 10]} intensity={1} />
+
       <group>
         {[...Array(N_LAYERS).keys()].map((index) =>
           [...Array(WIDTH).keys()].map((x) =>
             [...Array(HEIGHT).keys()].map((y) => (
+
+
+
               <Tile
                 key={`${x},${y}`}
                 position={[x, index * 5 - 5, y]}
@@ -83,6 +109,9 @@ function Scene() {
     </group>
   );
 }
+
+
+
 
 export const GameBoard = () => {
   const {
@@ -104,7 +133,16 @@ export const GameBoard = () => {
       >
         HARVEST
       </button>
-      <Canvas orthographic camera={{ zoom: 40, position: [-1, 1, -1] }}>
+      <Canvas orthographic camera={{ zoom: 70, position: [-1, 1, -1] }}>
+
+        <color attach="background" args={['#444']} />
+        <Effects disableGamma>
+          {/* threshhold has to be 1, so nothing at all gets bloom by default */}
+          <unrealBloomPass threshold={.25} strength={.5} radius={1} />
+        </Effects>
+
+
+
         <Scene />
       </Canvas>
     </div>
