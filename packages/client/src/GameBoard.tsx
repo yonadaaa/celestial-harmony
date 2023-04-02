@@ -210,6 +210,7 @@ export const GameBoard = () => {
           PRAY
         </button>
         <button
+          style={{ margin: 2 }}
           onClick={async () => {
             setView(0);
           }}
@@ -217,6 +218,7 @@ export const GameBoard = () => {
           GOD
         </button>
         <button
+          style={{ margin: 2 }}
           onClick={async () => {
             setView(1);
           }}
@@ -224,6 +226,7 @@ export const GameBoard = () => {
           THE HEAVENS
         </button>
         <button
+          style={{ margin: 2 }}
           onClick={async () => {
             setView(2);
           }}
