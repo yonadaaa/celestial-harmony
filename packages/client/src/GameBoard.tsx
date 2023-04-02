@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import * as THREE from "three";
 import { Canvas, ThreeElements, useLoader, extend } from "@react-three/fiber";
 import { useComponentValue, useEntityQuery } from "@latticexyz/react";
-import { getComponentValueStrict, Has } from "@latticexyz/recs";
+import { getComponentValueStrict, Has, hasComponent } from "@latticexyz/recs";
 import { useMUD } from "./MUDContext";
 
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -45,7 +45,7 @@ function Tile(
   const ref = useRef<THREE.Mesh>(null!);
   return (
     <group>
-      {tile ? (
+      {tile && hasComponent(TileTable, tile) ? (
         <Clone
           object={
             props.objects[getComponentValueStrict(TileTable, tile).value].scene
