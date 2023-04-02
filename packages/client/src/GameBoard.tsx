@@ -94,11 +94,12 @@ function Tile(
 const Budget = ({ index }: { index: number }) => {
   const {
     world,
-    components: { BudgetTable },
+    components: { BudgetTable, ScoreTable },
   } = useMUD();
 
   const arr = world.entityToIndex.get(`0x0${index}`);
   const budget = useComponentValue(BudgetTable, arr);
+  const score = useComponentValue(ScoreTable, arr);
 
   return (
     <Text
@@ -107,7 +108,7 @@ const Budget = ({ index }: { index: number }) => {
       color="blue"
       rotation={[0, Math.PI, 0]}
     >
-      BUDGET: {budget?.value}
+      BUDGET: {budget ? budget.value : 0} SCORE: {score ? score.value : 0}
     </Text>
   );
 };
@@ -139,7 +140,6 @@ function Scene({ view }: { view: number }) {
   const tile_base = useLoader(GLTFLoader, "/tile_base.glb");
   const tile_fire = useLoader(GLTFLoader, "/tile_fire.glb");
   const tile_water = useLoader(GLTFLoader, "/tile_water.glb");
-  const tile_air = useLoader(GLTFLoader, "/tile_air.glb");
   const background = useLoader(GLTFLoader, "/background_earth.glb");
 
   const objects = [tile_base, tile_fire, tile_water];

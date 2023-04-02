@@ -11,6 +11,12 @@ export default mudConfig({
       },
       schema: "uint32",
     },
+    ScoreTable: {
+      primaryKeys: {
+        index: "uint32",
+      },
+      schema: "uint32",
+    },
     TileTable: {
       primaryKeys: {
         index: "uint32",
