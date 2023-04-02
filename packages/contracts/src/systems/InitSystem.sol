@@ -6,7 +6,7 @@ import { TileTable } from "../tables/TileTable.sol";
 uint256 constant ID = uint256(keccak256("system.Init"));
 
 uint256 constant N_LAYERS = 2;
-uint256 constant WIDTH = 10;
+uint256 constant WIDTH = 6;
 
 contract InitSystem is System {
   function init() public {
