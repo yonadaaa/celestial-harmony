@@ -29,7 +29,6 @@ contract ForwardSystem is System {
             TileTable.set(1, x, y, value - 1);
             ScoreTable.set(1, ScoreTable.get(1) + 1);
           }
-          ScoreTable.set(0, ScoreTable.get(0) + 1);
         } else if (tile1 > tile0) {
           uint8 value = TileTable.get(0, x, y);
           if (value == 0) {
