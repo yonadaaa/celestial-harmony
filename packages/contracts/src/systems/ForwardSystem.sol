@@ -2,13 +2,19 @@
 pragma solidity >=0.8.0;
 import { System } from "@latticexyz/world/src/System.sol";
 import { BudgetTable } from "../tables/BudgetTable.sol";
+import { TimestampTable } from "../tables/TimestampTable.sol";
 import { TileTable } from "../tables/TileTable.sol";
 import { N_LAYERS, WIDTH } from "./InitSystem.sol";
 
 uint256 constant ID = uint256(keccak256("system.Forward"));
+uint256 constant INTERVAL = 10;
+bytes32 constant SINGLETON_KEY = bytes32(uint256(0x060D));
 
 contract ForwardSystem is System {
   function forward() public {
+    require(block.timestamp > TimestampTable.get(SINGLETON_KEY) + INTERVAL, "not enough time passed");
+    TimestampTable.set(SINGLETON_KEY, block.timestamp);
+
     uint32 counter = 0;
 
     for (uint32 x = 0; x < WIDTH; x++) {

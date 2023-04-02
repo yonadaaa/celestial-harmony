@@ -2,6 +2,9 @@ import { mudConfig } from "@latticexyz/cli";
 
 export default mudConfig({
   tables: {
+    TimestampTable: {
+      schema: "uint256",
+    },
     BudgetTable: {
       primaryKeys: {
         index: "uint32",

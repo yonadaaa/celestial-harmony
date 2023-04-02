@@ -9,6 +9,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Clone, Effects, Text } from "@react-three/drei";
 import { UnrealBloomPass } from "three-stdlib";
 import { Object3D } from "three";
+import { SingletonID } from "@latticexyz/network";
 
 extend({ UnrealBloomPass });
 
@@ -42,7 +43,6 @@ function Tile(
     return i === props.index && xT === props.x && yT === props.y;
   });
 
-  console.log(tile && getComponentValueStrict(TileTable, tile).value);
   const ref = useRef<THREE.Mesh>(null!);
   return (
     <group>
@@ -106,12 +106,37 @@ const Budget = ({ index }: { index: number }) => {
     </Text>
   );
 };
+
+const Timestamp = () => {
+  const {
+    components: { TimestampTable },
+    singletonEntity,
+  } = useMUD();
+
+  const timestamp = useComponentValue(TimestampTable, singletonEntity);
+
+  return (
+    <Text
+      position={[6, 0, 3]}
+      scale={[0.5, 0.5, 0.5]}
+      color="white"
+      rotation={[0, -Math.PI / 2, 0]}
+    >
+      Last Harvest:{" "}
+      {timestamp
+        ? new Date(parseInt(timestamp?.value) * 1000).toLocaleTimeString()
+        : 0}
+    </Text>
+  );
+};
+
 function Scene({ view }: { view: number }) {
   const tile_fire = useLoader(GLTFLoader, "/tile_water.glb");
 
   return (
     <group>
       <pointLight position={[10, 10, 10]} intensity={1} />
+      <Timestamp />
 
       <group>
         {[...Array(N_LAYERS).keys()].map((index) => (
