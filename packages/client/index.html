@@ -47,13 +47,13 @@
     }
 
     #splash {
-      background-image: url("splash.jpg");
+      background-image: url("splash.png");
       position: fixed;
       left: 0px;
       top: 0px;
       width: 100%;
       height: 100%;
-      background-size: 100%;
+      background-size: cover;
       background-repeat: no-repeat;
       z-index: 100000;
       text-align: center;
@@ -69,7 +69,7 @@
     }
 
     .layer0 {
-      position: absolute;
+      position: fixed;
       left: 10px;
       top: 40%;
       color: #fff;
@@ -78,7 +78,7 @@
     }
 
     .layer1 {
-      position: absolute;
+      position: fixed;
       right: 10px;
       top: 40%;
       color: #fff;
@@ -113,11 +113,15 @@
         } else {
           clearInterval(fadeEffect);
           document.getElementById("splash").remove();
+          audio.pause();
         }
       }, 200);
     }
 
     document.getElementById("splash").addEventListener('click', fadeOutEffect);
+
+    var audio = new Audio('splash.mp3');
+    audio.play();
 
   </script>
 </body>
