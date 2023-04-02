@@ -91,7 +91,7 @@ function Tile(
   );
 }
 
-const Budget = ({ index }: { index: number }) => {
+const Info = ({ index }: { index: number }) => {
   const {
     world,
     components: { BudgetTable, ScoreTable },
@@ -102,14 +102,11 @@ const Budget = ({ index }: { index: number }) => {
   const score = useComponentValue(ScoreTable, arr);
 
   return (
-    <Text
-      position={[3, 0, 6]}
-      scale={[1, 1, 1]}
-      color="blue"
-      rotation={[0, Math.PI, 0]}
-    >
-      BUDGET: {budget ? budget.value : 0} SCORE: {score ? score.value : 0}
-    </Text>
+    <div className={`layer${index}`}>
+      <div>Layer: {index}</div>
+      <div>BUDGET: {budget ? budget.value : 0}</div>
+      <div>SCORE: {score ? score.value : 0}</div>
+    </div>
   );
 };
 
@@ -122,17 +119,12 @@ const Timestamp = () => {
   const timestamp = useComponentValue(TimestampTable, singletonEntity);
 
   return (
-    <Text
-      position={[6, 0, 3]}
-      scale={[0.5, 0.5, 0.5]}
-      color="blue"
-      rotation={[0, -Math.PI / 2, 0]}
-    >
-      Last Harvest:{" "}
+    <div className="timestamp">
+      <span>Last Harvest:</span>
       {timestamp
         ? new Date(parseInt(timestamp?.value) * 1000).toLocaleTimeString()
         : 0}
-    </Text>
+    </div>
   );
 };
 
@@ -148,7 +140,6 @@ function Scene({ view }: { view: number }) {
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} intensity={0.5} />'{" "}
       <primitive object={background.scene} position={[2, 0, 2]} />
-      <Timestamp />
       <group>
         {[...Array(N_LAYERS).keys()].map((index) => (
           <group
@@ -165,7 +156,6 @@ function Scene({ view }: { view: number }) {
               0,
             ]}
           >
-            <Budget index={index} />
             {[...Array(WIDTH).keys()].map((x) =>
               [...Array(HEIGHT).keys()].map((y) => (
                 <Tile
@@ -205,7 +195,7 @@ export const GameBoard = () => {
 
         <Scene view={view} />
       </Canvas>
-      <div style={{ position: "absolute", left: 0, top: 0 }}>
+      <div className="parent">
         <button
           className="prayer_button"
           onClick={async () => {
@@ -240,6 +230,10 @@ export const GameBoard = () => {
         >
           LAYER 1
         </button>
+        {[0, 1].map((i) => (
+          <Info index={i} />
+        ))}
+        <Timestamp />
       </div>
     </div>
   );
