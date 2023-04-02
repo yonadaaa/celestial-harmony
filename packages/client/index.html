@@ -1,19 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>a minimal MUD client</title>
-    <style>
-      * {
-        margin:0px;
-        padding:0px;
-        box-sizing:border-box;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="react-root"></div>
-    <script type="module" src="/src/index.tsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>celestial harmony</title>
+  <style>
+
+    @font-face {
+      font-family: "Durrow";
+      src: url("Durrow.ttf") format("truetype");
+    }
+
+    * {
+      margin: 0px;
+      padding: 0px;
+      box-sizing: border-box;
+    }
+
+    .prayer_button {
+      position:fixed;
+      outline:none;
+      border: none;
+      background-color: rgba(0,0,0,0);
+      right:10px;
+      top:10px;
+      width:220px;
+      height:220px;
+      background-image: url("pray_unpressed.png");
+      background-size:contain;
+      cursor: pointer;
+    }
+
+    .prayer_button:hover {
+      background-image: url("pray_pressed.png");
+
+    }
+
+    button {
+      font-family:Durrow;
+      font-size:20px;
+    }
+
+    body {
+      font-family:Durrow;
+      font-size:20px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- <div id="TEST" style="position:fixed;z-index:100;left:10px;top:10px">TEST</div> -->
+  <div id="react-root"></div>
+  <script type="module" src="/src/index.tsx"></script>
+  <div id="pray">
+    
+    <!-- <img src="pray_unpressed.png"> -->
+  </div>
+</body>
+
 </html>

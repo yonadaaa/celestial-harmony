@@ -104,7 +104,7 @@ const Budget = ({ index }: { index: number }) => {
     <Text
       position={[3, 0, 6]}
       scale={[1, 1, 1]}
-      color="white"
+      color="blue"
       rotation={[0, Math.PI, 0]}
     >
       BUDGET: {budget?.value}
@@ -124,7 +124,7 @@ const Timestamp = () => {
     <Text
       position={[6, 0, 3]}
       scale={[0.5, 0.5, 0.5]}
-      color="white"
+      color="blue"
       rotation={[0, -Math.PI / 2, 0]}
     >
       Last Harvest:{" "}
@@ -140,14 +140,15 @@ function Scene({ view }: { view: number }) {
   const tile_fire = useLoader(GLTFLoader, "/tile_fire.glb");
   const tile_water = useLoader(GLTFLoader, "/tile_water.glb");
   const tile_air = useLoader(GLTFLoader, "/tile_air.glb");
+  const background = useLoader(GLTFLoader, "/background_earth.glb");
 
   const objects = [tile_base, tile_fire, tile_water];
-
   return (
     <group>
-      <pointLight position={[10, 10, 10]} intensity={1} />
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} intensity={0.5} />'{" "}
+      <primitive object={background.scene} position={[2, 0, 2]} />
       <Timestamp />
-
       <group>
         {[...Array(N_LAYERS).keys()].map((index) => (
           <group
@@ -199,13 +200,14 @@ export const GameBoard = () => {
         <color attach="background" args={["#444"]} />
 
         <Effects disableGamma>
-          <unrealBloomPass threshold={0.5} strength={0.01} radius={0.75} />
+          {/* <unrealBloomPass threshold={0.5} strength={0.2} radius={0.75} /> */}
         </Effects>
 
         <Scene view={view} />
       </Canvas>
       <div style={{ position: "absolute", left: 0, top: 0 }}>
         <button
+          className="prayer_button"
           onClick={async () => {
             // Create a World contract instance
             const s = signer.get();
@@ -215,7 +217,7 @@ export const GameBoard = () => {
             await txResult.wait();
           }}
         >
-          HARVEST
+          PRAY
         </button>
         <button
           onClick={async () => {
